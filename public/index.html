@@ -719,23 +719,21 @@ async function enrichWithAI(domain, gscData) {
 
   const prompt = `Tu es un expert SEO. Génère des données RÉALISTES pour "${domain}" basées sur ces vrais KPIs GSC : ${totalClicks} clics, position moyenne ${avgPos}.
 Réponds UNIQUEMENT en JSON valide, sans markdown.
-{
-  "emoji":"🌐",
-  "siteType":"type de site",
-  "cwv":{"lcp":{"value":"X.Xs","score":70,"status":"good"},"inp":{"value":"XXms","score":60,"status":"needs"},"cls":{"value":"0.XX","score":80,"status":"good"},"ttfb":{"value":"XXXms","score":75,"status":"good"},"fcp":{"value":"X.Xs","score":72,"status":"good"},"perfScore":78},
-  "backlinks":{"months":["Oct","Nov","Déc","Jan","Fév","Mar"],"gained":[10,15,12,18,14,16],"lost":[3,4,2,5,3,4],"refDomains":450,"avgDR":52,"new30d":14},
-  "errors":[{"code":"404","url":"/exemple","count":5},{"code":"301","url":"/old → /new","count":3},{"code":"404","url":"/autre","count":2},{"code":"500","url":"/api","count":1}],
-  "summary":"2 phrases de résumé SEO en français."
-}`;
+{"emoji":"🌐","siteType":"type de site","cwv":{"lcp":{"value":"X.Xs","score":70,"status":"good"},"inp":{"value":"XXms","score":60,"status":"needs"},"cls":{"value":"0.XX","score":80,"status":"good"},"ttfb":{"value":"XXXms","score":75,"status":"good"},"fcp":{"value":"X.Xs","score":72,"status":"good"},"perfScore":78},"backlinks":{"months":["Oct","Nov","Déc","Jan","Fév","Mar"],"gained":[10,15,12,18,14,16],"lost":[3,4,2,5,3,4],"refDomains":450,"avgDR":52,"new30d":14},"errors":[{"code":"404","url":"/exemple","count":5},{"code":"301","url":"/old → /new","count":3},{"code":"404","url":"/autre","count":2},{"code":"500","url":"/api","count":1}],"summary":"2 phrases de résumé SEO en français."}`;
 
   const resp = await fetch('/api/claude', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}] })
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
   });
+
   const result = await resp.json();
-  const text = result.content?.map(b=>b.text||'').join('') || '{}';
-  return JSON.parse(text.replace(/```json|```/g,'').trim());
+  const text = result.content?.map(b => b.text || '').join('') || '{}';
+  return JSON.parse(text.replace(/```json|```/g, '').trim());
 }
 
 // ─── DEMO mode ────────────────────────────────────────────────────────────
